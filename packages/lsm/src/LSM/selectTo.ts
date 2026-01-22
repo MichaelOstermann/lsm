@@ -37,7 +37,7 @@ import { normalize } from "./normalize"
 export function selectTo<T>(lsm: LSM<T>, selectable: T): LSM<T> {
     const group = anchorGroup(lsm)
     const anchorPos = anchorIndex(lsm)
-    const focusPos = lsm.selected.indexOf(selectable)
+    const focusPos = lsm.selectables.indexOf(selectable)
     if (!group || anchorPos < 0 || focusPos < 0) return lsm
 
     const startPos = Math.min(anchorPos, focusPos)
