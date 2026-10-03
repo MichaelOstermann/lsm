@@ -65,9 +65,11 @@ function normalizeAnchors<T>(lsm: LSM<T>): LSM<T> {
         const mruAnchor = anchors.pop()!
 
         if (mruAnchor !== group.at(0) && mruAnchor !== group.at(-1)) {
-            anchorsToAdd.push(group.at(0)!)
+            // Moves the anchor to the beginning of the group, which may be one of the remaining anchors.
+            const first = group.at(0)!
+            anchorsToAdd.push(first)
             anchorsToRemove.push(mruAnchor)
-            anchorsToRemove.push(...anchors)
+            anchorsToRemove.push(...anchors.filter(key => key !== first))
         }
         else {
             anchorsToRemove.push(...anchors)
