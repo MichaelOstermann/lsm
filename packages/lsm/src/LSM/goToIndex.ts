@@ -28,7 +28,7 @@ import { goTo } from "./goTo"
  *
  */
 export function goToIndex<T>(lsm: LSM<T>, position: number): LSM<T> {
-    const selectable = lsm.selectables.at(position)
-    if (!selectable) return lsm
-    return goTo(lsm, selectable)
+    const length = lsm.selectables.length
+    if (position < -length || position >= length) return lsm
+    return goTo(lsm, lsm.selectables.at(position)!)
 }

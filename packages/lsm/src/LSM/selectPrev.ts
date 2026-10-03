@@ -43,11 +43,10 @@ export function selectPrev<T>(lsm: LSM<T>): LSM<T> {
     if (focusPos > anchorPos)
         return unselect(lsm, lsm.selectables[focusPos]!)
 
-    const selectable = lsm.selectables
-        .slice(0, focusPos + 1)
-        .findLast(selectable => !isSelected(lsm, selectable))
+    const position = lsm.selectables
+        .findLastIndex((selectable, position) => position <= focusPos && !isSelected(lsm, selectable))
 
-    return selectable
-        ? normalize(addSelected(lsm, [selectable]))
+    return position >= 0
+        ? normalize(addSelected(lsm, [lsm.selectables[position]!]))
         : lsm
 }

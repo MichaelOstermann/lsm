@@ -57,12 +57,14 @@ function normalizeAnchors<T>(lsm: LSM<T>): LSM<T> {
             .filter(key => lsm.anchors.has(key))
             .sort((a, b) => lsm.selected.indexOf(a) - lsm.selected.indexOf(b))
 
-        const mruAnchor = anchors.pop()
-
-        if (!mruAnchor) {
+        if (!anchors.length) {
             anchorsToAdd.push(group.at(0)!)
+            continue
         }
-        else if (mruAnchor !== group.at(0) && mruAnchor !== group.at(-1)) {
+
+        const mruAnchor = anchors.pop()!
+
+        if (mruAnchor !== group.at(0) && mruAnchor !== group.at(-1)) {
             anchorsToAdd.push(group.at(0)!)
             anchorsToRemove.push(mruAnchor)
             anchorsToRemove.push(...anchors)
