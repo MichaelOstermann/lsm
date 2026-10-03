@@ -1,5 +1,6 @@
 import type { LSM } from "."
 import { cached } from "./internals/cache"
+import { selectablePositions } from "./internals/selectablePositions"
 
 const key = Symbol("groups")
 
@@ -35,9 +36,7 @@ const key = Symbol("groups")
  */
 export function groups<T>(lsm: LSM<T>): T[][] {
     return cached(lsm, key, () => {
-        const positions = lsm.selectables.reduce((acc, key, idx) => {
-            return acc.set(key, idx)
-        }, new Map<T, number>())
+        const positions = selectablePositions(lsm.selectables)
 
         return lsm.selected
             .toSorted((a, b) => positions.get(a)! - positions.get(b)!)

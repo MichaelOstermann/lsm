@@ -1,4 +1,5 @@
 import type { LSM } from "."
+import { selectedPositions } from "./internals/selectedPositions"
 
 /**
  * # isSelected
@@ -24,5 +25,5 @@ import type { LSM } from "."
  *
  */
 export function isSelected<T>(lsm: LSM<T>, selectable: T): boolean {
-    return lsm.selected.includes(selectable)
+    return selectedPositions(lsm).has(selectable)
 }

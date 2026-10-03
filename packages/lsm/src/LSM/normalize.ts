@@ -3,6 +3,8 @@ import { groups } from "./groups"
 import { addAnchors } from "./internals/addAnchors"
 import { removeAnchors } from "./internals/removeAnchors"
 import { removeSelected } from "./internals/removeSelected"
+import { selectablePositions } from "./internals/selectablePositions"
+import { selectedPositions } from "./internals/selectedPositions"
 
 /**
  * # normalize
@@ -36,11 +38,13 @@ import { removeSelected } from "./internals/removeSelected"
  */
 export function normalize<T>(lsm: LSM<T>): LSM<T> {
     // Remove invalid selections.
-    const selectionsToRemove = lsm.selected.filter(key => !lsm.selectables.includes(key))
+    const selectables = selectablePositions(lsm.selectables)
+    const selectionsToRemove = lsm.selected.filter(key => !selectables.has(key))
     lsm = removeSelected(lsm, selectionsToRemove)
 
     // Remove invalid anchors.
-    const anchorsToRemove = Array.from(lsm.anchors).filter(key => !lsm.selected.includes(key))
+    const selected = selectedPositions(lsm)
+    const anchorsToRemove = Array.from(lsm.anchors).filter(key => !selected.has(key))
     lsm = removeAnchors(lsm, anchorsToRemove)
 
     lsm = normalizeAnchors(lsm)
@@ -55,7 +59,7 @@ function normalizeAnchors<T>(lsm: LSM<T>): LSM<T> {
     for (const group of groups(lsm)) {
         const anchors = group
             .filter(key => lsm.anchors.has(key))
-            .sort((a, b) => lsm.selected.indexOf(a) - lsm.selected.indexOf(b))
+            .sort((a, b) => selectedPositions(lsm).get(a)! - selectedPositions(lsm).get(b)!)
 
         if (!anchors.length) {
             anchorsToAdd.push(group.at(0)!)

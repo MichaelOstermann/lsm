@@ -32,9 +32,10 @@ const key = Symbol("anchor")
  */
 export function anchor<T>(lsm: LSM<T>): T | undefined {
     return cached(lsm, key, () => {
-        return Array
-            .from(lsm.anchors)
-            .sort((a, b) => lsm.selected.indexOf(a) - lsm.selected.indexOf(b))
-            .at(-1)
+        for (let i = lsm.selected.length - 1; i >= 0; i--) {
+            const key = lsm.selected[i]!
+            if (lsm.anchors.has(key)) return key
+        }
+        return undefined
     })
 }

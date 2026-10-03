@@ -46,7 +46,8 @@ export function selectTo<T>(lsm: LSM<T>, selectable: T): LSM<T> {
     const keys = lsm.selectables.slice(startPos, endPos + 1)
     if (focusPos < anchorPos) keys.reverse()
 
-    lsm = removeSelected(lsm, group.filter(key => !keys.includes(key)))
+    const range = new Set(keys)
+    lsm = removeSelected(lsm, group.filter(key => !range.has(key)))
     lsm = addSelected(lsm, keys)
     return normalize(lsm)
 }
