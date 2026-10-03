@@ -1,6 +1,7 @@
 import type { LSM } from "."
 import { clear } from "./clear"
 import { addSelected } from "./internals/addSelected"
+import { normalize } from "./normalize"
 
 /**
  * # selectAll
@@ -28,8 +29,8 @@ import { addSelected } from "./internals/addSelected"
  */
 export function selectAll<T>(lsm: LSM<T>): LSM<T> {
     if (lsm.selected.length === lsm.selectables.length) return lsm
-    if (!lsm.selected.length) return lsm
     lsm = clear(lsm)
     lsm = addSelected(lsm, lsm.selectables)
-    return lsm
+    // Anchors the selection at the top, so it can be extended and shrunk afterwards.
+    return normalize(lsm)
 }
