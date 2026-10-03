@@ -63,7 +63,11 @@ export function handleMouseEvent<T>(
     },
 ): [boolean, LSM<T>] {
     if (evt.button === 0 || evt.button === undefined) {
-        if (evt.metaKey || evt.ctrlKey) return [true, toggleSelect(lsm, selectable)]
+        if (evt.metaKey || evt.ctrlKey) {
+            // Without multiselect, toggling replaces the selection instead of adding to it.
+            if (options?.multiselect === false && !isSelected(lsm, selectable)) return [true, goTo(lsm, selectable)]
+            return [true, toggleSelect(lsm, selectable)]
+        }
         if (evt.shiftKey && options?.multiselect !== false) return [true, selectTo(lsm, selectable)]
         return [true, goTo(lsm, selectable)]
     }
